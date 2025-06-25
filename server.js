@@ -22,9 +22,11 @@ const authRouter = require('./routes/authRouter.js');
 const movieRouter = require('./routes/movieRouter.js');
 const reviewsRouter = require('./routes/reviewsRouter.js');
 const favoriteRouter = require('./routes/favoriteRouter.js');
+const usersRouter = require('./routes/usersRouter.js');
 
 
 app.use("/", authRouter);
 app.use('/movies',movieRouter);
 app.use('/reviews', reviewsRouter);
 app.use('/favorite', favoriteRouter);
+app.use('/users', usersRouter);
