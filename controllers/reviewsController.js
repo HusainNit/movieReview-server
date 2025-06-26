@@ -1,5 +1,6 @@
 const Movies = require('../models/Movies');
 const Users = require('../models/Users');
+const Reviews = require('../models/Reviews');
 
 const showAllReviews = async (req, res) => {
     const movieId = req.params.movieId;
@@ -18,12 +19,14 @@ const showSingleReview = async (req, res) => {
     const movieId = req.params.movieId;
     const reviewId = req.params.reviewId;
     try {
-        const review = await Movies.findOne({ _id: movieId, 'reviews._id': reviewId }).populate('reviews');
-        if (!review) {
-            return res.json({ message: 'Review not found' });
-        }
-        res.json(review);
-    } catch (error) {
+ 
+            const findReview = await Reviews.findOne({_id: reviewId });
+            if (!findReview) {
+                return res.json({ message: 'Review not found' });
+            }
+            res.json(findReview);
+        
+        } catch (error) {
         res.json({ error: 'Failed to fetch review', details: error.message });
     }
 }
@@ -31,12 +34,12 @@ const showSingleReview = async (req, res) => {
 const createReview = async (req, res) => {
     try {
         const movieId = req.params.movieId;
-        const { userId, content, rating } = req.body;
+        const userId = req.body.userId;
 
         // Validate user
         const user = await Users.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.json({ message: 'User not found' });
         }
 
         const movie = await Movies.findById(movieId);
@@ -44,7 +47,7 @@ const createReview = async (req, res) => {
             return res.json({ message: 'Movie not found' });
         }
 
-        await Movies.create({
+        await Reviews.create({
             userId: user._id,
             movieId: movie._id,
             rating: req.body.rating,
