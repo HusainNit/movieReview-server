@@ -3,15 +3,15 @@ const router = express.Router();
 const moviesController = require('../controllers/moviesController.js');
 const reviewsController = require('../controllers/reviewsController.js');
 
-// get the movies either all or by id
+// get the list of all movies
 router.get('/', moviesController.listAllMovies);
+// get movie details by id
 router.get('/:movieId', moviesController.showMovie);
+// save a movie by id
 router.post('/:movieId', moviesController.saveMovieId);
-
-// router.get('/:id/reviews', reviewsController.showExistingReview);
-
-// get all reviews or a specific review by id
+// get all movies reviews
 router.get('/:movieId/reviews', reviewsController.showAllReviews);
+// get a single review by id
 router.get('/:movieId/reviews/:reviewId', reviewsController.showSingleReview);
 // create a new review
 router.post('/:movieId/reviews', reviewsController.createReview);
