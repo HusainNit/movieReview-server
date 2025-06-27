@@ -17,22 +17,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 
-app.use('/', (req, res) => {
-  res.send(`Connected!`)
-})
 
-app.listen(PORT, () => {
-  console.log(`Running Express server on Port ${PORT} . . .`)
-})
+
+
+
 
 const authRouter = require("./routes/authRouter.js");
 const movieRouter = require("./routes/movieRouter.js");
-const reviewsRouter = require("./routes/reviewsRouter.js");
 const favoriteRouter = require("./routes/favoriteRouter.js");
 const usersRouter = require("./routes/usersRouter.js");
 
 app.use("/auth", authRouter);
-// app.use('/movies',movieRouter);
-// // app.use('/reviews', reviewsRouter);
-// app.use('/favorite', favoriteRouter);
-// app.use('/users', usersRouter);
+app.use('/movies', movieRouter);
+//app.use('/reviews', reviewsRouter);
+app.use('/favorite', favoriteRouter);
+app.use('/users', usersRouter);
+
+app.get('/', (req, res) => {
+  res.send(`Connected!`)
+});
+
+app.listen(PORT, () => {
+  console.log(`Running Express server on Port ${PORT} . . .`)
+})

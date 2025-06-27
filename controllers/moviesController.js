@@ -10,28 +10,64 @@ const listAllMovies = async (req, res) => {
         const apiKey = process.env.TMDB_API_KEY;
         const apiUrl = process.env.TMDB_URL;
         const response = await axios.get(`${apiUrl}/discover/movie?api_key=${apiKey}`);
-      // need to catch the genres  https://api.themoviedb.org/3/genre/movie/list?=en-US&api_key=••••••'
+        // to list genres for frontend
+        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}&language=en-US`);
+        const genres = genresResponse.data.genres;
 
         const allMovies = response.data.results;
         res.json(allMovies);
-        console.log({allMovies});
+        console.log(allMovies , genres);
 
     } catch (error) {
-        
+          // Send error response
+        res.status(500).json({ error: 'Failed to fetch movies', details: error.message });
+ 
     }
 }
 
 const showMovie = async (req, res) => {
 
     try {
-        
+        let movieId = 574475; // Example movie ID, replace with req.params.id when using in routes
+        const apiKey = process.env.TMDB_API_KEY;
+        const apiUrl = process.env.TMDB_URL;
+        // const movieId = req.params.id;
+        const response = await axios.get(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=en-US`);
+        // to list genres for frontend
+        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}&language=en-US`);
+        const genres = genresResponse.data.genres;
+        const movieDetails = response.data;
+        res.json({movieDetails , genres});
+        console.log({movieDetails , genres});
     } catch (error) {
-        
+          // Send error response
+        res.status(500).json({ error: 'Failed to fetch movies', details: error.message });
+    }
+};
+
+
+const saveMovieId = async (req, res) => {
+     const movieId = req.params.movieId;
+    try {
+        if (await Movies.exists({ movieId: movieId })) {
+            console.log('Movie already exists in the database');
+            res.json({ message: `Movie ID ${movieId} already exists in the database`});
+        } else {
+           await Movies.create({
+                movieId: movieId
+            });
+            console.log('Movie ID saved successfully');
+            res.json({ message: `Movie ID ${movieId} saved successfully` });
+        }
+
+    } catch (error) {
+        res.json({ error: 'Failed to save movie ID', details: error.message });
     }
 
 }
 
 module.exports = {
     listAllMovies,
-    showMovie
+    showMovie,
+    saveMovieId
 }

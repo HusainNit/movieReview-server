@@ -14,7 +14,6 @@ const reviewsSchema = new mongoose.Schema(
         isEdited: { type: Boolean, default: false },
         // to track how many users found the review helpful and enforce each user to have only one vote
         helpfulVotes: { type: Number, default: 0 },
-        helpfulBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }]
     },
     {
         timestamps: true
