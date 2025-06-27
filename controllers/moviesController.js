@@ -11,7 +11,7 @@ const listAllMovies = async (req, res) => {
         const apiUrl = process.env.TMDB_URL;
         const response = await axios.get(`${apiUrl}/discover/movie?api_key=${apiKey}`);
         // to list genres for frontend
-        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}&language=en-US`);
+        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}`);
         const genres = genresResponse.data.genres;
 
         const allMovies = response.data.results;
@@ -32,9 +32,9 @@ const showMovie = async (req, res) => {
         const apiKey = process.env.TMDB_API_KEY;
         const apiUrl = process.env.TMDB_URL;
         // const movieId = req.params.id;
-        const response = await axios.get(`${apiUrl}/movie/${movieId}?api_key=${apiKey}&language=en-US`);
+        const response = await axios.get(`${apiUrl}/movie/${movieId}?=en-US&api_key=${apiKey}`);
         // to list genres for frontend
-        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}&language=en-US`);
+        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}`);
         const genres = genresResponse.data.genres;
         const movieDetails = response.data;
         res.json({movieDetails , genres});

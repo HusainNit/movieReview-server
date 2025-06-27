@@ -7,9 +7,6 @@ const showAllReviews = async (req, res) => {
     try {
         const movie = await Movies.findOne({ movieId: movieTMDBId });
         const reviews = await Reviews.find({ movieId: movie._id });
-        console.log('Fetching reviews for movieId:', movieTMDBId);
-        console.log('Fetching reviews for movieId:', movie._id);
-
         if (!reviews) {
             return res.send({ message: 'No reviews found' });
         }
@@ -47,12 +44,12 @@ const createReview = async (req, res) => {
         if (!movie) {
             return res.send({ message: 'Movie not found' });
         }
-        await Reviews.create({
+        const newReview = await Reviews.create({
             userId: user._id,
             movieId: movie._id,
             ...req.body 
         });
-        res.send({ message: 'Review created successfully' });
+        res.send({ message: 'Review created successfully', newReview });
     } catch (error) {
         res.send({ error: 'Failed to create review', details: error.message });
     }
@@ -93,7 +90,7 @@ const deleteReview = async (req, res) => {
         if (!deletedReview) {
             return res.send({ message: 'Review not found' });
         }
-        res.send({ message: 'Review deleted successfully' });
+        res.send({ message: 'Review deleted successfully' , deletedReview });
     } catch (error) {
         res.send({ error: 'Failed to delete review', details: error.message }); 
     }
