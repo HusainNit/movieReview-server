@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const usersSchema = new mongoose.Schema(
+
   {
     email: { type: String, required: true },
     passwordDigest: { type: String, required: true },
@@ -12,6 +13,7 @@ const usersSchema = new mongoose.Schema(
   {
     timestamps: true,
   }
+
 );
 const Users = mongoose.model("Users", usersSchema);
 module.exports = Users;
