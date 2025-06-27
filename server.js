@@ -6,7 +6,7 @@ const logger = require("morgan");
 const cors = require("cors");
 const methodOverride = require("method-override");
 
-const PORT = process.env.PORT ? process.env.PORT : 3005;
+const PORT = process.env.PORT ? process.env.PORT : 3000;
 const db = require("./db");
 const app = express();
 
@@ -17,14 +17,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 
-app.use('/', (req, res) => {
-  res.send(`Connected!`)
-})
-
-app.listen(PORT, () => {
-  console.log(`Running Express server on Port ${PORT} . . .`)
-})
-
 const authRouter = require("./routes/authRouter.js");
 const movieRouter = require("./routes/movieRouter.js");
 const reviewsRouter = require("./routes/reviewsRouter.js");
@@ -32,7 +24,16 @@ const favoriteRouter = require("./routes/favoriteRouter.js");
 const usersRouter = require("./routes/usersRouter.js");
 
 app.use("/auth", authRouter);
-// app.use('/movies',movieRouter);
+app.use("/movies", movieRouter);
+
+app.use("/", (req, res) => {
+  res.send(`Connected!`);
+});
+
+app.listen(PORT, () => {
+  console.log(`Running Express server on Port ${PORT} . . .`);
+});
+
 // // app.use('/reviews', reviewsRouter);
 // app.use('/favorite', favoriteRouter);
 // app.use('/users', usersRouter);

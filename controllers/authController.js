@@ -1,4 +1,5 @@
 const User = require("../models/Users");
+const middleware = require("../middleware");
 
 const Register = async (req, res) => {
   try {
@@ -42,8 +43,13 @@ const Login = async (req, res) => {
     res.status(401).send({ status: "Error", msg: "An error has occurred!" });
   }
 };
+const CheckSession = async (req, res) => {
+  const { payload } = res.locals;
+  res.status(200).send(payload);
+};
 
 module.exports = {
   Register,
   Login,
+  CheckSession,
 };
