@@ -1,17 +1,24 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const moviesController = require('../controllers/moviesController.js');
-const reviewsController = require('../controllers/reviewsController.js');
-const middleware = require('../middleware/index.js');
 
-// get the list of all movies
-router.get('/', 
-    moviesController.listAllMovies
+const moviesController = require("../controllers/moviesController.js");
+const reviewsController = require("../controllers/reviewsController.js");
+const middleware = require("../middleware");
+
+// get the movies either all or by id
+router.get(
+  "/",
+  middleware.stripToken,
+  middleware.verifyToken,
+  moviesController.listAllMovies
 );
-// get movie details by id
-router.get('/:movieId', 
-    moviesController.showMovie
+router.get(
+  "/:id",
+  middleware.stripToken,
+  middleware.verifyToken,
+  moviesController.showMovie
 );
+
 // save a movie by id
 router.post('/:movieId', 
     middleware.stripToken,
