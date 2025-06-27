@@ -7,11 +7,11 @@ const showAllReviews = async (req, res) => {
     try {
         const reviews = await Movies.find({ _id: movieId }).populate('reviews');
         if (!reviews) {
-            return res.json({ message: 'No reviews found' });
+            return res.send({ message: 'No reviews found' });
         }
-        res.json(reviews);
+        res.send(reviews);
     } catch (error) {
-        res.json({ error: 'Failed to fetch reviews', details: error.message });
+        res.send({ error: 'Failed to fetch reviews', details: error.message });
     }
 }
 
@@ -22,12 +22,12 @@ const showSingleReview = async (req, res) => {
  
             const findReview = await Reviews.findOne({_id: reviewId });
             if (!findReview) {
-                return res.json({ message: 'Review not found' });
+                return res.send({ message: 'Review not found' });
             }
-            res.json(findReview);
+            res.send(findReview);
         
         } catch (error) {
-        res.json({ error: 'Failed to fetch review', details: error.message });
+        res.send({ error: 'Failed to fetch review', details: error.message });
     }
 }
 
@@ -39,12 +39,12 @@ const createReview = async (req, res) => {
         // Validate user
         const user = await Users.findById(userId);
         if (!user) {
-            return res.json({ message: 'User not found' });
+            return res.send({ message: 'User not found' });
         }
 
         const movie = await Movies.findById(movieId);
         if (!movie) {
-            return res.json({ message: 'Movie not found' });
+            return res.send({ message: 'Movie not found' });
         }
 
         await Reviews.create({
@@ -64,7 +64,7 @@ const createReview = async (req, res) => {
 
         
     } catch (error) {
-        res.json({ error: 'Failed to create review', details: error.message });
+        res.send({ error: 'Failed to create review', details: error.message });
     }
 }
 
@@ -79,17 +79,24 @@ const updateReview = async (req, res) => {
             { new: true }
         ).populate('reviews');
 
-        res.json(updatedMovie);
+        res.send(updatedMovie);
     } catch (error) {
-        res.json({ error: 'Failed to update review', details: error.message });
+        res.send({ error: 'Failed to update review', details: error.message });
     }
 }
 
 const deleteReview = async (req, res) => {
     try {
-        
+        const movieId = req.params.movieId;
+        const reviewId = req.params.reviewId;
+
+        const deletedReview = await Reviews.findOneAndDelete({ _id: reviewId, movieId: movieId });
+        if (!deletedReview) {
+            return res.send({ message: 'Review not found' });
+        }
+        res.send({ message: 'Review deleted successfully' });
     } catch (error) {
-        
+        res.send({ error: 'Failed to delete review', details: error.message }); 
     }
 }
 
