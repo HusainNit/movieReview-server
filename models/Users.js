@@ -3,7 +3,7 @@ const usersSchema = new mongoose.Schema(
 
   {
     email: { type: String, required: true },
-    passwordDigest: { type: String, required: true },
+    password: { type: String, required: true },
     name: { type: String },
     profileImg: { type: String },
     role: { type: String, default: "user" },
