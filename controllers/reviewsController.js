@@ -3,9 +3,13 @@ const Users = require('../models/Users');
 const Reviews = require('../models/Reviews');
 
 const showAllReviews = async (req, res) => {
-    const movieId = req.params.movieId;
+    const movieTMDBId = req.params.movieId;
     try {
-        const reviews = await Movies.find({ _id: movieId }).populate('reviews');
+        const movie = await Movies.findOne({ movieId: movieTMDBId });
+        const reviews = await Reviews.find({ movieId: movie._id });
+        console.log('Fetching reviews for movieId:', movieTMDBId);
+        console.log('Fetching reviews for movieId:', movie._id);
+
         if (!reviews) {
             return res.send({ message: 'No reviews found' });
         }
@@ -16,12 +20,14 @@ const showAllReviews = async (req, res) => {
 }
 
 const showSingleReview = async (req, res) => {
-    const movieId = req.params.movieId;
+
     const reviewId = req.params.reviewId;
     try {
  
-            const findReview = await Reviews.findOne({_id: reviewId });
-            if (!findReview) {
+        console.log('Fetching review for reviewId:', reviewId);
+        const findReview = await Reviews.findById(reviewId );
+        
+        if (!findReview) {
                 return res.send({ message: 'Review not found' });
             }
             res.send(findReview);
@@ -42,7 +48,7 @@ const createReview = async (req, res) => {
             return res.send({ message: 'User not found' });
         }
 
-        const movie = await Movies.findById(movieId);
+        const movie = await Movies.findOne({movieId : movieId});
         if (!movie) {
             return res.send({ message: 'Movie not found' });
         }
@@ -51,7 +57,7 @@ const createReview = async (req, res) => {
             userId: user._id,
             movieId: movie._id,
             rating: req.body.rating,
-            comment: req.body.content,
+            comment: req.body.comment,
             editedComment: req.body.editedComment,
             isEdited: req.body.isEdited,
             likes: req.body.likes,
@@ -60,7 +66,7 @@ const createReview = async (req, res) => {
             helpfulBy: req.body.helpfulBy
         });
 
-        res.send({ message: 'Review created successfully', movieId, userId, content, rating });
+        res.send({ message: 'Review created successfully'});
 
         
     } catch (error) {
@@ -70,16 +76,29 @@ const createReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
     try {
-        const movieId = req.params.movieId;
         const reviewId = req.params.reviewId;
 
-        const updatedMovie = await Movies.findOneAndUpdate(
-            { _id: movieId, 'reviews._id': reviewId },
-            req.body ,
+        // Validate review exists
+        const review = await Reviews.findById(reviewId);
+        if (!review) {
+            return res.send({ message: 'Review not found' });
+        } else {
+        const updatedReview = await Reviews.findOneAndUpdate(
+            { _id: reviewId },
+            { 
+                isEdited: true,
+                comment: review.comment,
+                editedComment: req.body.editedComment,
+                rating: req.body.rating,
+                likes: req.body.likes,
+                dislikes: req.body.dislikes,
+                helpfulVotes: req.body.helpfulVotes,    
+            },
             { new: true }
-        ).populate('reviews');
+        );
+        res.send(updatedReview);
+    }
 
-        res.send(updatedMovie);
     } catch (error) {
         res.send({ error: 'Failed to update review', details: error.message });
     }
@@ -87,10 +106,9 @@ const updateReview = async (req, res) => {
 
 const deleteReview = async (req, res) => {
     try {
-        const movieId = req.params.movieId;
         const reviewId = req.params.reviewId;
 
-        const deletedReview = await Reviews.findOneAndDelete({ _id: reviewId, movieId: movieId });
+        const deletedReview = await Reviews.findOneAndDelete({ _id: reviewId });
         if (!deletedReview) {
             return res.send({ message: 'Review not found' });
         }
