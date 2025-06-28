@@ -1,6 +1,8 @@
 const Movies = require('../models/Movies');
 const Users = require('../models/Users');
 const Reviews = require('../models/Reviews');
+let countLike , countDislike;
+
 
 const showAllReviews = async (req, res) => {
     const movieTMDBId = req.params.movieId;
@@ -10,7 +12,13 @@ const showAllReviews = async (req, res) => {
         if (!reviews) {
             return res.send({ message: 'No reviews found' });
         }
-        res.send(reviews);
+        
+        countLike = await Reviews.countDocuments({ movieId: movie._id, likes: 1 });
+        countDislike = await Reviews.countDocuments({ movieId: movie._id, dislikes: 1 });
+        const test = { likes: countLike, dislikes: countDislike, ...reviews }
+
+
+        res.send(test);
     } catch (error) {
         res.send({ error: 'Failed to fetch reviews', details: error.message });
     }
@@ -49,6 +57,10 @@ const createReview = async (req, res) => {
             movieId: movie._id,
             ...req.body 
         });
+        //update like and dislike counts
+
+
+
         res.send({ message: 'Review created successfully', newReview });
     } catch (error) {
         res.send({ error: 'Failed to create review', details: error.message });
