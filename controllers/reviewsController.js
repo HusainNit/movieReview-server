@@ -13,6 +13,7 @@ const showAllReviews = async (req, res) => {
             return res.send({ message: 'No reviews found' });
         }
         
+        //
         countLike = await Reviews.countDocuments({ movieId: movie._id, likes: 1 });
         countDislike = await Reviews.countDocuments({ movieId: movie._id, dislikes: 1 });
         const test = { likes: countLike, dislikes: countDislike, ...reviews }
@@ -52,10 +53,16 @@ const createReview = async (req, res) => {
         if (!movie) {
             return res.send({ message: 'Movie not found' });
         }
+        const movieIdH = movie.movieId; // Use the TMDB movieId directly
+        console.log('Creating review for movieId:', movieIdH);
         const newReview = await Reviews.create({
             userId: user._id,
-            movieId: movie._id,
-            ...req.body 
+            movieId: movie._id, 
+            comment: req.body.comment,
+            rating: req.body.rating,
+            likes: req.body.likes,
+            dislikes: req.body.dislikes,
+            helpfulVotes: req.body.helpfulVotes        
         });
         //update like and dislike counts
 

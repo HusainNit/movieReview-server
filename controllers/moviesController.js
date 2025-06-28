@@ -5,10 +5,17 @@ require("dotenv").config();
 const listAllMovies = async (req, res) => {
 
     try {
+        console.time('get-movies');
         const apiKey = process.env.TMDB_API_KEY;
         const apiUrl = process.env.TMDB_URL;
-        const allMoviesResponse = await axios.get(`${apiUrl}/discover/movie?api_key=${apiKey}`);
-        const allMovies = allMoviesResponse.data.results;
+
+        // To load 3 pages of movies
+        // This is a simple way to get more movies, you can adjust the number of pages
+        const allMovies = [];
+        for (let page = 1; page <= 3; page++) {
+            const response = await axios.get(`${apiUrl}/discover/movie?api_key=${apiKey}&page=${page}`);
+            allMovies.push(...response.data.results);
+        }
 
         // to list genres for frontend
         const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?api_key=${apiKey}&language=en-US`);
@@ -20,6 +27,7 @@ const listAllMovies = async (req, res) => {
         allMovies.forEach(movie => {
             movie.genres = movie.genre_ids.map(id => genreName[id]);
         });
+        console.timeEnd('get-movies');
 
         res.json({ allMovies });
 
@@ -32,7 +40,7 @@ const listAllMovies = async (req, res) => {
 const showMovie = async (req, res) => {
 
     try {
-        let movieId = 574475; // Example movie ID, replace with req.params.id when using in routes
+        let movieId = req.params.movieId; // Example movie ID, replace with req.params.id when using in routes
         const apiKey = process.env.TMDB_API_KEY;
         const apiUrl = process.env.TMDB_URL;
         // const movieId = req.params.id;
