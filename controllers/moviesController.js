@@ -4,45 +4,30 @@ require("dotenv").config();
 
 const listAllMovies = async (req, res) => {
 
-  try {
-    const apiKey = process.env.TMDB_API_KEY;
-    const apiUrl = "https://api.themoviedb.org/3";
-    const response = await axios.get(
-      `${apiUrl}/discover/movie?api_key=${apiKey}`
-    );
-    // need to catch the genres  https://api.themoviedb.org/3/genre/movie/list?=en-US&api_key=••••••'
+    try {
+        const apiKey = process.env.TMDB_API_KEY;
+        const apiUrl = process.env.TMDB_URL;
+        const allMoviesResponse = await axios.get(`${apiUrl}/discover/movie?api_key=${apiKey}`);
+        const allMovies = allMoviesResponse.data.results;
 
-    const allMovies = response.data.results;
-    console.log(allMovies);
-    res.json(allMovies);
-    // console.log({allMovies});
-    // res.send(allMovies);
-  } catch (error) {
-    console.error("Error fetching movies:", error.message);
-    res.status(500).json({ error: "Failed to fetch movies" });
-  }
-};
+        // to list genres for frontend
+        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?api_key=${apiKey}&language=en-US`);
+        const genres = genresResponse.data.genres;
 
+        // Replace genre_ids with genre names after web searching and AI searching
+        const genreName = {};
+        genres.forEach(g => genreName[g.id] = g.name);
+        allMovies.forEach(movie => {
+            movie.genres = movie.genre_ids.map(id => genreName[id]);
+        });
 
+        res.json({ allMovies });
 
-//     try {
-//         const apiKey = process.env.TMDB_API_KEY;
-//         const apiUrl = process.env.TMDB_URL;
-//         const response = await axios.get(`${apiUrl}/discover/movie?api_key=${apiKey}`);
-//         // to list genres for frontend
-//         const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}`);
-//         const genres = genresResponse.data.genres;
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch movies', details: error.message });
+    }
+}
 
-//         const allMovies = response.data.results;
-//         res.json(allMovies);
-//         console.log(allMovies , genres);
-
-//     } catch (error) {
-//           // Send error response
-//         res.status(500).json({ error: 'Failed to fetch movies', details: error.message });
- 
-//     }
-// }
 
 const showMovie = async (req, res) => {
 
@@ -53,11 +38,16 @@ const showMovie = async (req, res) => {
         // const movieId = req.params.id;
         const response = await axios.get(`${apiUrl}/movie/${movieId}?=en-US&api_key=${apiKey}`);
         // to list genres for frontend
-        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?=en-US&api_key=${apiKey}`);
+        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?api_key=${apiKey}&language=en-US`);
         const genres = genresResponse.data.genres;
         const movieDetails = response.data;
-        res.json({movieDetails , genres});
-        console.log({movieDetails , genres});
+
+        // Replace genre_ids with genre names after web searching and AI searching
+        const genreName = {};
+        genres.forEach(g => genreName[g.id] = g.name);
+        movieDetails.genres = movieDetails.genres.map(g => genreName[g.id] || g.name);
+
+        res.json({ movieDetails });
     } catch (error) {
           // Send error response
         res.status(500).json({ error: 'Failed to fetch movies', details: error.message });
@@ -90,4 +80,3 @@ module.exports = {
     showMovie,
     saveMovieId
 }
-
