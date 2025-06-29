@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const moviesSchema = new mongoose.Schema(
+const movieSchema = new mongoose.Schema(
     { 
         movieId : { type: String, required: true, unique: true }
     },
@@ -7,5 +7,5 @@ const moviesSchema = new mongoose.Schema(
         timestamps: true
     }
 );
-const Movies = mongoose.model('Movies',moviesSchema);
-module.exports = Movies;
+const Movie = mongoose.model('Movie',movieSchema);
+module.exports = Movie;
