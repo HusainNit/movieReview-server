@@ -1,6 +1,7 @@
-const Movies = require("../models/Movies");
+const Movie = require("../models/Movie");
 const axios = require("axios");
-const Reviews = require("../models/Reviews");
+const Review = require("../models/Review");
+const Favorite = require("../models/Favorite");
 require("dotenv").config();
 
 const listAllMovies = async (req, res) => {
@@ -69,13 +70,13 @@ const showMovie = async (req, res) => {
 const saveMovieId = async (req, res) => {
   const movieId = req.params.movieId;
   try {
-    if (await Movies.exists({ movieId: movieId })) {
+    if (await Movie.exists({ movieId: movieId })) {
       console.log("Movie already exists in the database");
       res.json({
         message: `Movie ID ${movieId} already exists in the database`,
       });
     } else {
-      await Movies.create({
+      await Movie.create({
         movieId: movieId,
       });
       console.log("Movie ID saved successfully");
@@ -86,28 +87,72 @@ const saveMovieId = async (req, res) => {
   }
 };
 
-const toggleLike = async (req, res) => {
+const MakeReviewDoc = async (req, res) => {
   try {
     const { id: userId } = res.locals.payload;
-    const movieId = req.params.id;
+    const data = req.body;
+    // console.log(userId);
+    // console.log(data);
 
-    let review = await Reviews.findOne({ userId, movieId });
+    let movie = await Movie.findOne({ movieId: data.movieId });
 
-    if (!review) {
-      review = await Reviews.create({
-        userId,
-        movieId,
-        rating: 0, 
-        likes: true,
-      });
-    } else {
-      review.likes = !review.likes;
-      await review.save();
+    if (!movie) {
+      movie = await Movie.create({ movieId: data.movieId });
     }
 
-    res.json({ success: true, review });
+    if (movie) {
+      let review = await Review.findOne({
+        userId,
+        movieId: movie._id,
+      });
+
+      if (!review) {
+        review = await Review.create({
+          userId: userId,
+          movieId: movie._id,
+          rating: data.rating,
+          like: data.like,
+          dislike: data.dislike,
+          comment: data.comment,
+        });
+        // console.log("created");
+
+      } else {
+        review.rating = data.rating;
+        review.like = data.like;
+        review.dislike = data.dislike;
+        review.comment = data.comment;
+        await review.save();
+        // console.log("updated");
+      }
+      // console.log(review);
+    } else {
+      return res.json({ success: false });
+    }
+
+    if (data.favorite) {
+      MakeFavoriteDoc({ movieId: movie._id, userId: userId });
+    }
+
+    res.json({ success: true });
   } catch (error) {
-    res.json({ error: "Failed to save like", details: error.message });
+    console.error("Error while submitting review:", error.message);
+  }
+};
+
+const MakeFavoriteDoc = async (obj) => {
+  try {
+    let favorite = await Favorite.findOne({ movieId: obj.movieId });
+
+    if (!favorite) {
+      favorite = await Favorite.create({
+        movieId: obj.movieId,
+        userId: obj.userId,
+      });
+      // console.log("done fav");
+    }
+  } catch (error) {
+    console.error("Error while submitting Favorite:", error.message);
   }
 };
 
@@ -115,5 +160,5 @@ module.exports = {
   listAllMovies,
   showMovie,
   saveMovieId,
-  toggleLike,
+  MakeReviewDoc,
 };

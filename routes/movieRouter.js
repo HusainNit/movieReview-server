@@ -20,10 +20,10 @@ router.get(
 );
 
 router.put(
-  "/:id/like",
+  "/:id/Review",
   middleware.stripToken,
   middleware.verifyToken,
-  moviesController.toggleLike
+  moviesController.MakeReviewDoc
 );
 
 // save a movie by id
