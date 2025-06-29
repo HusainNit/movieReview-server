@@ -1,5 +1,6 @@
 const Movies = require("../models/Movies");
 const axios = require("axios");
+const Reviews = require("../models/Reviews");
 require("dotenv").config();
 
 const listAllMovies = async (req, res) => {
@@ -85,8 +86,34 @@ const saveMovieId = async (req, res) => {
   }
 };
 
+const toggleLike = async (req, res) => {
+  try {
+    const { id: userId } = res.locals.payload;
+    const movieId = req.params.id;
+
+    let review = await Reviews.findOne({ userId, movieId });
+
+    if (!review) {
+      review = await Reviews.create({
+        userId,
+        movieId,
+        rating: 0, 
+        likes: true,
+      });
+    } else {
+      review.likes = !review.likes;
+      await review.save();
+    }
+
+    res.json({ success: true, review });
+  } catch (error) {
+    res.json({ error: "Failed to save like", details: error.message });
+  }
+};
+
 module.exports = {
   listAllMovies,
   showMovie,
   saveMovieId,
+  toggleLike,
 };
