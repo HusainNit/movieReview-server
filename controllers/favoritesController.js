@@ -1,5 +1,5 @@
 const Favorite = require('../models/Favorite');
-const User = require('../models/Users')
+const User = require('../models/User')
 
 // Get all favorite movies for the logged-in user
 const getFavorites = async (req, res) => {
