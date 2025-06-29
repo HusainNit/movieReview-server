@@ -12,10 +12,10 @@ const showAllReviews = async (req, res) => {
       return res.send({ message: "No reviews found" });
     }
 
-    countLike = await Reviews.countDocuments({ movieId: movie._id, likes: true });
+    countLike = await Reviews.countDocuments({ movieId: movie._id, like: true });
     countDislike = await Reviews.countDocuments({
       movieId: movie._id,
-      dislikes: true,
+      dislike: true,
     });
     const test = { likes: countLike, dislikes: countDislike, ...reviews };
 
