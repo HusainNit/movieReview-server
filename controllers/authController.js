@@ -1,10 +1,10 @@
-const User = require("../models/Users");
+const User = require("../models/User");
 
 const middleware = require("../middleware");
 
 const Register = async (req, res) => {
   try {
-    const { email, password, firstName, lastName, role } = req.body;
+    const { email, password, name, role } = req.body;
 
     let passwordDigest = await middleware.hashPassword(password);
 
@@ -14,7 +14,12 @@ const Register = async (req, res) => {
         .status(400)
         .send("A user with that email has already been registered!");
     } else {
-      const user = await User.create({ email, password: passwordDigest, firstName, lastName, role });
+      const user = await User.create({
+        email,
+        password: passwordDigest,
+        name,
+        role,
+      });
       res.send(user);
     }
   } catch (error) {
@@ -25,14 +30,11 @@ const Register = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email:email });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(401).send({ status: "Error", msg: "Unauthorized" });
     }
-    let matched = await middleware.comparePassword(
-      password,
-      user.password
-    );
+    let matched = await middleware.comparePassword(password, user.password);
     if (matched) {
       let payload = {
         id: user._id,
