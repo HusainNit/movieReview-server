@@ -68,7 +68,9 @@ const findMovieName = async (req, res) => {
   try {
     const apiKey = process.env.TMDB_API_KEY;
     const apiUrl = process.env.TMDB_URL;
-    const movieName = req.query.movieName;
+    const movieName = req.query.q;
+    console.log("Received movie name:", req.query);
+    console.log("Searching for movie:", movieName);
     const response = await axios.get(`${apiUrl}/search/movie?api_key=${apiKey}&query=${movieName}`);
 
     //to list genres for frontend
