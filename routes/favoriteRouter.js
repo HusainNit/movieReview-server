@@ -4,9 +4,10 @@ const router = express.Router();
 
 
 
-router.get('/', favoritesController.getFavorites)
-router.post('/', favoritesController.addFavorite)
-router.delete('/:movieId', favoritesController.removeFavorite )
+router.get('/profile/:id/favorite', favoritesController.getFavorites)
+router.post('/profile/:id/favorite', favoritesController.addFavorite)
+router.delete('/profile/:id/favorite/:favoriteId', favoritesController.removeFavorite)
+
 
 
 module.exports = router;
