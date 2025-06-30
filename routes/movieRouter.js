@@ -8,16 +8,21 @@ const middleware = require("../middleware");
 // get the movies either all or by id
 router.get(
   "/",
-  middleware.stripToken,
-  middleware.verifyToken,
   moviesController.listAllMovies
 );
+router.get(
+  '/search', 
+  moviesController.findMovieName
+);
+
 router.get(
   "/:id",
   middleware.stripToken,
   middleware.verifyToken,
   moviesController.showMovie
 );
+
+
 
 router.put(
   "/:id/Review",

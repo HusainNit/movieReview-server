@@ -38,10 +38,10 @@ const listAllMovies = async (req, res) => {
 const showMovie = async (req, res) => {
 
     try {
-        let movieId = 574475; // Example movie ID, replace with req.params.id when using in routes
+        //let movieId = 574475; // Example movie ID, replace with req.params.id when using in routes
         const apiKey = process.env.TMDB_API_KEY;
         const apiUrl = process.env.TMDB_URL;
-        // const movieId = req.params.id;
+         const movieId = req.params.movieId;
         const response = await axios.get(`${apiUrl}/movie/${movieId}?=en-US&api_key=${apiKey}`);
         // to list genres for frontend
         const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?api_key=${apiKey}&language=en-US`);
@@ -63,6 +63,37 @@ const showMovie = async (req, res) => {
       .json({ error: "Failed to fetch movies", details: error.message });
   }
 };
+
+const findMovieName = async (req, res) => {
+  try {
+    const apiKey = process.env.TMDB_API_KEY;
+    const apiUrl = process.env.TMDB_URL;
+    const movieName = req.query.movieName;
+    const response = await axios.get(`${apiUrl}/search/movie?api_key=${apiKey}&query=${movieName}`);
+
+    //to list genres for frontend
+        const genresResponse = await axios.get(`${apiUrl}/genre/movie/list?api_key=${apiKey}&language=en-US`);
+        const genres = genresResponse.data.genres;
+        const movieFound = response.data.results;
+
+    // Replace genre_ids with genre names after web searching and AI searching
+        const genreName = {};
+        genres.forEach(g => genreName[g.id] = g.name);
+        movieFound.forEach(movie => {
+            movie.genres = movie.genre_ids.map(id => genreName[id]);
+        });
+
+    console.log("Movie found:", response.data.results);
+
+    res.json(movieFound);
+
+
+  } catch (error) {
+    console.error("Error while searching for movie:", error.message);
+    res.status(500).json({ error: "Failed to search for movie", details: error.message });
+  }
+}
+
 
 const saveMovieId = async (req, res) => {
   const movieId = req.params.movieId;
@@ -158,4 +189,5 @@ module.exports = {
   showMovie,
   saveMovieId,
   MakeReviewDoc,
+  findMovieName
 };

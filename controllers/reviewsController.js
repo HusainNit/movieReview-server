@@ -77,9 +77,7 @@ const updateReview = async (req, res) => {
       const updatedReview = await Reviews.findOneAndUpdate(
         { _id: reviewId },
         {
-          isEdited: true,
-          comment: review.comment,
-          editedComment: req.body.editedComment,
+          comment: req.body.comment,
           rating: req.body.rating,
           likes: req.body.likes,
           dislikes: req.body.dislikes,
