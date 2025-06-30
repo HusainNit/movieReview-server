@@ -27,7 +27,7 @@ app.use("/auth", authRouter);
 app.use("/movies", movieRouter);
 
 //app.use('/reviews', reviewsRouter);
-app.use('/favorite', favoriteRouter);
+// app.use('/favorite', favoriteRouter);
 app.use('/users', usersRouter);
 
 app.use("/", (req, res) => {
