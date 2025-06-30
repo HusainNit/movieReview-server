@@ -5,11 +5,9 @@ const chalk = require("chalk");
 const logger = require("morgan");
 const cors = require("cors");
 const methodOverride = require("method-override");
-
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 const db = require("./db");
 const app = express();
-
 app.use(express.static("public"));
 app.use(cors());
 app.use(logger("dev"));
