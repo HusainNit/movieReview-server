@@ -1,20 +1,21 @@
 const express = require("express");
-const favoritesController = require("../controllers/favoritesController");
 const router = express.Router();
+
+const reviewController = require("../controllers/reviewsController.js");
 const middleware = require("../middleware");
 
-router.delete(
-  "/delete/:id",
+router.get(
+  "/my-reviews",
   middleware.stripToken,
   middleware.verifyToken,
-  favoritesController.removeFavorite
+  reviewController.getMyReviews
 );
 
 router.get(
-  "/myFavorite",
+  "/:id",
   middleware.stripToken,
   middleware.verifyToken,
-  favoritesController.GetMyFavorite
+  reviewController.getReviewsByMovieId
 );
 
 module.exports = router;

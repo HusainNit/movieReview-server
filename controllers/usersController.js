@@ -8,8 +8,6 @@ const GetUserData = async (req, res) => {
     const { email } = res.locals.payload;
 
     let user = await User.findOne({ email: email })
-      .populate("favorites")
-      .populate("reviews");
 
     res.json(user);
   } catch (error) {
