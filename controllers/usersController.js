@@ -17,6 +17,21 @@ const GetUserData = async (req, res) => {
   }
 };
 
+const ImgChange = async (req, res) => {
+  try {
+    const { id: userId } = res.locals.payload;
+
+    let user = await User.findByIdAndUpdate(userId, {
+      profileImg: req.body.imgpath,
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    console.log("cant get user data" + error.message);
+  }
+};
+
 module.exports = {
   GetUserData,
+  ImgChange,
 };

@@ -11,4 +11,11 @@ router.get(
   userController.GetUserData
 );
 
+router.post(
+  "/img",
+  middleware.stripToken,
+  middleware.verifyToken,
+  userController.ImgChange
+);
+
 module.exports = router;
