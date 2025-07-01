@@ -12,10 +12,10 @@ const showAllReviews = async (req, res) => {
       return res.send({ message: "No reviews found" });
     }
 
-    countLike = await Reviews.countDocuments({ movieId: movie._id, likes: 1 });
+    countLike = await Reviews.countDocuments({ movieId: movie._id, like: true });
     countDislike = await Reviews.countDocuments({
       movieId: movie._id,
-      dislikes: 1,
+      dislike: true,
     });
     const test = { likes: countLike, dislikes: countDislike, ...reviews };
 
@@ -77,9 +77,7 @@ const updateReview = async (req, res) => {
       const updatedReview = await Reviews.findOneAndUpdate(
         { _id: reviewId },
         {
-          isEdited: true,
-          comment: review.comment,
-          editedComment: req.body.editedComment,
+          comment: req.body.comment,
           rating: req.body.rating,
           likes: req.body.likes,
           dislikes: req.body.dislikes,
