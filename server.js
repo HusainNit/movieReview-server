@@ -18,7 +18,7 @@ app.use(methodOverride("_method"));
 const authRouter = require("./routes/authRouter.js");
 const movieRouter = require("./routes/movieRouter.js");
 const favoriteRouter = require("./routes/favoriteRouter.js");
-const usersRouter = require("./routes/usersRouter.js");
+const userRouter = require("./routes/userRouter.js");
 
 app.use("/auth", authRouter);
 
@@ -26,7 +26,7 @@ app.use("/movies", movieRouter);
 
 //app.use('/reviews', reviewsRouter);
 // app.use('/favorite', favoriteRouter);
-app.use('/users', usersRouter);
+app.use('/user', userRouter);
 
 app.use("/", (req, res) => {
   res.send(`Connected!`);
