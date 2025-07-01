@@ -3,8 +3,8 @@ const userSchema = new mongoose.Schema(
   {
     email: { type: String, required: true },
     password: { type: String, required: true },
-    name: { type: String },
-    profileImg: { type: String },
+    name: { type: String, required: true },
+    profileImg: { type: String, default: "" },
     role: { type: String, default: "user" },
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Favorite" }],
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],

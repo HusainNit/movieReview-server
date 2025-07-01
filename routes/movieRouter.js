@@ -15,12 +15,12 @@ router.get(
   moviesController.findMovieName
 );
 
-router.get(
-  "/:id",
-  middleware.stripToken,
-  middleware.verifyToken,
-  moviesController.showMovie
-);
+// router.get(
+//   "/:id",
+//   middleware.stripToken,
+//   middleware.verifyToken,
+//   moviesController.showMovie
+// );
 
 
 
@@ -31,37 +31,38 @@ router.put(
   moviesController.MakeReviewDoc
 );
 
-// save a movie by id
-router.post(
-  "/:movieId",
-  middleware.stripToken,
-  middleware.verifyToken,
-  moviesController.saveMovieId
-);
-// get all movies reviews
-router.get("/:movieId/reviews", reviewsController.showAllReviews);
-// get a single review by id
-router.get("/:movieId/reviews/:reviewId", reviewsController.showSingleReview);
-// create a new review
-router.post(
-  "/:movieId/reviews",
-  middleware.stripToken,
-  middleware.verifyToken,
-  reviewsController.createReview
-);
-// update a review by id
-router.put(
-  "/:movieId/reviews/:reviewId",
-  middleware.stripToken,
-  middleware.verifyToken,
-  reviewsController.updateReview
-);
-// delete a review by id
-router.delete(
-  "/:movieId/reviews/:reviewId",
-  middleware.stripToken,
-  middleware.verifyToken,
-  reviewsController.deleteReview
-);
+// // save a movie by id
+// router.post(
+//   "/:movieId",
+//   middleware.stripToken,
+//   middleware.verifyToken,
+//   moviesController.saveMovieId
+// );
+
+// // get all movies reviews
+// router.get("/:movieId/reviews", reviewsController.showAllReviews);
+// // get a single review by id
+// router.get("/:movieId/reviews/:reviewId", reviewsController.showSingleReview);
+// // create a new review
+// router.post(
+//   "/:movieId/reviews",
+//   middleware.stripToken,
+//   middleware.verifyToken,
+//   reviewsController.createReview
+// );
+// // update a review by id
+// router.put(
+//   "/:movieId/reviews/:reviewId",
+//   middleware.stripToken,
+//   middleware.verifyToken,
+//   reviewsController.updateReview
+// );
+// // delete a review by id
+// router.delete(
+//   "/:movieId/reviews/:reviewId",
+//   middleware.stripToken,
+//   middleware.verifyToken,
+//   reviewsController.deleteReview
+// );
 
 module.exports = router;

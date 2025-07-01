@@ -1,20 +1,21 @@
 const express = require("express");
-const favoritesController = require("../controllers/favoritesController");
 const router = express.Router();
-const middleware = require("../middleware");
 
-router.delete(
-  "/delete/:id",
-  middleware.stripToken,
-  middleware.verifyToken,
-  favoritesController.removeFavorite
-);
+const middleware = require("../middleware");
+const userController = require("../controllers/usersController.js");
 
 router.get(
-  "/myFavorite",
+  "/",
   middleware.stripToken,
   middleware.verifyToken,
-  favoritesController.GetMyFavorite
+  userController.GetUserData
+);
+
+router.post(
+  "/img",
+  middleware.stripToken,
+  middleware.verifyToken,
+  userController.ImgChange
 );
 
 module.exports = router;
