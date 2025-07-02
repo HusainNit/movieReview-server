@@ -11,9 +11,6 @@ const reviewSchema = new mongoose.Schema(
     like: { type: Boolean, default: false },
     dislike: { type: Boolean, default: false },
 
-    // isEdited: { type: Boolean, default: false },
-    // editedComment: { type: Boolean, default: false },
-
     // to track how many users found the review helpful and enforce each user to have only one vote
     helpfulVotes: { type: Number, default: 0 },
   },
