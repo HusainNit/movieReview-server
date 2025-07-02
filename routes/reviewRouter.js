@@ -11,6 +11,14 @@ router.get(
   reviewController.getMyReviews
 );
 
+
+router.get(
+  "/all-reviews",
+  middleware.stripToken,
+  middleware.verifyToken,
+  reviewController.showAllReviews
+);
+
 router.get(
   "/:id",
   middleware.stripToken,

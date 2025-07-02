@@ -63,6 +63,9 @@ const createReview = async (req, res) => {
       movieId: movie._id,
       ...req.body,
     });
+       // Update users's reviews array
+    user.reviews.push(newReview._id);
+    await user.save();
     //update like and dislike counts
 
     res.send({ message: "Review created successfully", newReview });

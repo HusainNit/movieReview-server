@@ -2,8 +2,8 @@ const Favorite = require("../models/Favorite");
 const User = require("../models/User");
 const Movie = require("../models/Movie");
 const mongoose = require("mongoose");
-
 const axios = require("axios");
+
 
 // Remove a movie from favorites
 const removeFavorite = async (req, res) => {
