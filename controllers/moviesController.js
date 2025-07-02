@@ -37,37 +37,6 @@ const listAllMovies = async (req, res) => {
   }
 };
 
-const showMovie = async (req, res) => {
-  try {
-    //let movieId = 574475; // Example movie ID, replace with req.params.id when using in routes
-    const apiKey = process.env.TMDB_API_KEY;
-    const apiUrl = process.env.TMDB_URL;
-    const movieId = req.params.movieId;
-    const response = await axios.get(
-      `${apiUrl}/movie/${movieId}?=en-US&api_key=${apiKey}`
-    );
-    // to list genres for frontend
-    const genresResponse = await axios.get(
-      `${apiUrl}/genre/movie/list?api_key=${apiKey}&language=en-US`
-    );
-    const genres = genresResponse.data.genres;
-    const movieDetails = response.data;
-
-    // Replace genre_ids with genre names after web searching and AI searching
-    const genreName = {};
-    genres.forEach((g) => (genreName[g.id] = g.name));
-    movieDetails.genres = movieDetails.genres.map(
-      (g) => genreName[g.id] || g.name
-    );
-
-    res.json({ movieDetails });
-  } catch (error) {
-    // Send error response
-    res
-      .status(500)
-      .json({ error: "Failed to fetch movies", details: error.message });
-  }
-};
 
 const findMovieName = async (req, res) => {
   try {
@@ -105,32 +74,12 @@ const findMovieName = async (req, res) => {
   }
 };
 
-const saveMovieId = async (req, res) => {
-  const movieId = req.params.movieId;
-  try {
-    if (await Movie.exists({ movieId: movieId })) {
-      console.log("Movie already exists in the database");
-      res.json({
-        message: `Movie ID ${movieId} already exists in the database`,
-      });
-    } else {
-      await Movie.create({
-        movieId: movieId,
-      });
-      console.log("Movie ID saved successfully");
-      res.json({ message: `Movie ID ${movieId} saved successfully` });
-    }
-  } catch (error) {
-    res.json({ error: "Failed to save movie ID", details: error.message });
-  }
-};
 
 const MakeReviewDoc = async (req, res) => {
   try {
     const { id: userId } = res.locals.payload;
     const data = req.body;
-    // console.log(userId);
-    // console.log(data);
+
 
     let movie = await Movie.findOne({ movieId: data.movieId });
 
@@ -153,7 +102,6 @@ const MakeReviewDoc = async (req, res) => {
           dislike: data.dislike,
           comment: data.comment,
         });
-        // console.log("created");
         const user = await User.findById(userId);
         user.reviews.push(review._id);
         await user.save();
@@ -163,9 +111,7 @@ const MakeReviewDoc = async (req, res) => {
         review.dislike = data.dislike;
         review.comment = data.comment;
         await review.save();
-        // console.log("updated");
       }
-      // console.log(review);
     } else {
       return res.json({ success: false });
     }
@@ -189,7 +135,6 @@ const MakeFavoriteDoc = async (obj) => {
         movieId: obj.movieId,
         userId: obj.userId,
       });
-      // console.log("done fav");
       const user = await User.findById(obj.userId);
       user.favorites.push(favorite._id);
       await user.save();
@@ -201,8 +146,6 @@ const MakeFavoriteDoc = async (obj) => {
 
 module.exports = {
   listAllMovies,
-  showMovie,
-  saveMovieId,
   MakeReviewDoc,
   findMovieName,
 };
